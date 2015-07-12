@@ -85,11 +85,15 @@
         NSPropertyListFormat format;
         NSPropertyListReadOptions options = 0; // not in use.
         NSData *plistXML = [[NSFileManager defaultManager] contentsAtPath:plistPath];
-        NSArray *loadedArray = (NSArray *) [NSPropertyListSerialization propertyListWithData:plistXML options:options format:&format error:&error];
-        
-        [items removeAllObjects];
-        [items addObjectsFromArray:loadedArray];
-        return loadedArray;
+        if (plistXML) {
+            NSArray *loadedArray = (NSArray *) [NSPropertyListSerialization propertyListWithData:plistXML options:options format:&format error:&error];
+            
+            [items removeAllObjects];
+            [items addObjectsFromArray:loadedArray];
+            return loadedArray;
+        } else {
+            return nil;
+        }
     }
     return nil;
 }
