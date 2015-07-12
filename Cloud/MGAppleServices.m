@@ -71,6 +71,42 @@ NSString *const kCurrentDialedNumber = @"kCurrentDialedNumber";
     return self;
 }
 
++ (void)speakCondition:(NSString*)condition {
+    AVSpeechUtterance *utterance = [AVSpeechUtterance
+                                    speechUtteranceWithString:condition];
+    
+//    NSArray *speechVoices = [AVSpeechSynthesisVoice speechVoices];
+//    if (speechVoices) {
+//        AVSpeechSynthesisVoice *british = [speechVoices firstObject];
+//        utterance.voice = british;
+//    }
+//    AVSpeechSynthesisVoice *au = [AVSpeechSynthesisVoice voiceWithIdentifier:@"en-US"];
+//    AVSpeechSynthesisVoice *au = [AVSpeechSynthesisVoice voiceWithLanguage:@"en-AU"];
+//    AVSpeechSynthesisVoice *au = [AVSpeechSynthesisVoice voiceWithLanguage:@"en-US"];
+//    utterance.voice = au;
+//    utterance.rate = 1/2.0;
+    utterance.rate = 1/6.0;
+    AVSpeechSynthesizer *synth = [[AVSpeechSynthesizer alloc] init];
+    [synth speakUtterance:utterance];
+}
+
++ (void)zoomToLocationCoordinate:(CLLocationCoordinate2D)coordinate withMap:(MKMapView *)mapView{
+#define SEARCH_DISTANCE	25
+#define ONE_DEGREE_LAT_MILES 68.70795454545454
+#define SEARCH_SPAN_DELTA_LAT	SEARCH_DISTANCE/ONE_DEGREE_LAT_MILES
+    
+    MKCoordinateSpan span;
+    span.latitudeDelta = SEARCH_SPAN_DELTA_LAT * 1.5; ;
+    span.longitudeDelta = 0.5;
+    
+    MKCoordinateRegion region;
+    region.center = coordinate;
+    region.span = span;
+    
+    [mapView setRegion:region animated:YES];
+    [mapView regionThatFits:region];
+}
+
 + (NSString*)parseDeviceToken:(NSString*)tokenStr {
     return [[[tokenStr stringByReplacingOccurrencesOfString:@"<" withString:@""]
              stringByReplacingOccurrencesOfString:@">" withString:@""]

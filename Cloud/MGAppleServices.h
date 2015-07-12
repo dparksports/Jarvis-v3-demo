@@ -8,7 +8,9 @@
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
+@import MapKit;
 @import CloudKit;
+@import AVFoundation;
 #import "MGDebug.h"
 
 extern NSString *const kLocationReceivedEvent;
@@ -30,4 +32,7 @@ extern NSString *const kCurrentDialedNumber;
 
 + (NSString*)tagsByKnownScope;
 + (NSString*)tagsByUnknownScope;
+
++ (void)zoomToLocationCoordinate:(CLLocationCoordinate2D)coordinate withMap:(MKMapView *)mapView;
++ (void)speakCondition:(NSString*)condition;
 @end

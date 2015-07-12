@@ -55,6 +55,7 @@ MKMapViewDelegate, SKStoreProductViewControllerDelegate, UITextFieldDelegate {
         book.loadMyNumberAndToken()
         if book.myPhoneNumber == nil {
             pulsatingItem?.pulsingHaloLayer.hidden = false
+            MGAppleServices.speakCondition("Hello Jarvis. This is Siri. I will be your voice interface. ")
         } else {
             self.normalizePulsatingItem()
         }
@@ -63,7 +64,7 @@ MKMapViewDelegate, SKStoreProductViewControllerDelegate, UITextFieldDelegate {
     override func preferredStatusBarStyle() -> UIStatusBarStyle {
        return UIStatusBarStyle.Default
     }
-
+    
     func addUserLocationItem() {
         NSLog("%@: %@", reflect(self).summary, __FUNCTION__)
 
@@ -77,7 +78,7 @@ MKMapViewDelegate, SKStoreProductViewControllerDelegate, UITextFieldDelegate {
         NSLog("%@: %@", reflect(self).summary, __FUNCTION__)
         
         pulsatingItem?.pulsingHaloLayer.hidden = true
-        pulsatingButton?.setTitleColor(self.view.tintColor, forState: UIControlState.Normal)
+        pulsatingButton?.setTitleColor(UIColor.lightGrayColor(), forState: UIControlState.Normal)
         pulsatingButton?.setTitleColor(UIColor.redColor(), forState: UIControlState.Highlighted)
     }
     
@@ -100,6 +101,10 @@ MKMapViewDelegate, SKStoreProductViewControllerDelegate, UITextFieldDelegate {
             let annotation = PhotoAnnotation(imagePath: nil, title: title, coordinate: coordinate)
             annotation.coordinate = coordinate
             self.mapView.addAnnotation(annotation)
+        })
+        
+        dispatch_async(dispatch_get_main_queue(), {
+            MGAppleServices.zoomToLocationCoordinate(coordinate, withMap: self.mapView)
         })
     }
     
@@ -214,6 +219,12 @@ MKMapViewDelegate, SKStoreProductViewControllerDelegate, UITextFieldDelegate {
     @IBAction func askOwnerNumber(sender: AnyObject) {
         NSLog("%@: %@", reflect(self).summary, __FUNCTION__)
         
+        let book = Phonebook.sharedInstance()
+        book.loadMyNumberAndToken()
+        if book.myPhoneNumber == nil {
+            MGAppleServices.speakCondition("You have an incoming notification. Would you like to confirm it? Please confirm it by entering your iPhone number.")
+        }
+        
         MGSaltShaker.gibberishTest()
         
         let controller = UIAlertController(title: nil, message: "Set your phone number", preferredStyle:UIAlertControllerStyle.Alert)
@@ -291,6 +302,7 @@ MKMapViewDelegate, SKStoreProductViewControllerDelegate, UITextFieldDelegate {
             textField.addTarget(self, action: "editingChanged:", forControlEvents: UIControlEvents.EditingChanged)
         })
         self.presentViewController(controller, animated: true, completion: {
+            MGAppleServices.speakCondition("Jarvis can triangulate any iPhone around the world.  Enter a phone number to locate.")
         })
     }
     
@@ -346,6 +358,12 @@ MKMapViewDelegate, SKStoreProductViewControllerDelegate, UITextFieldDelegate {
         self.addMapAnnotation(coordinate: mapView.centerCoordinate, title: "Hero")
     }
     
+    @IBAction func speakJarvis(sender: AnyObject) {
+        NSLog("%@: %@", reflect(self).summary, __FUNCTION__)
+        
+        MGAppleServices.speakCondition("Hello Jarvis. This is Siri. I will be your voice interface. ")
+    }
+    
     @IBAction func showAboutController(sender: AnyObject) {
         NSLog("%@: %@", reflect(self).summary, __FUNCTION__)
         let controller = MGAboutController()
@@ -353,7 +371,7 @@ MKMapViewDelegate, SKStoreProductViewControllerDelegate, UITextFieldDelegate {
         self.presentViewController(controller, animated: true, completion:
             {})
     }
-    
+
     @IBAction func openAppStore(sender: AnyObject) {
         NSLog("%@: %@", reflect(self).summary, __FUNCTION__)
         let parameters = [
